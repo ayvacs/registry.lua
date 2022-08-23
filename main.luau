@@ -13,7 +13,7 @@ function reg.init(force: bool)
 	end
 	
 	local HANDLE_SERVER = Inst("Folder", script, { Name = "HANDLE_SERVER" })
-	print("The registry has been initialized")
+	print("Registry | Successfully initialized")
 	isRegInit = true
 	return 1
 end
@@ -35,7 +35,7 @@ local DataTypes = {
 -- Improved Instance.new function
 function Inst(DataType: string, Parent: Instance, Properties: table)
 	if not DataType then
-		return warn("Invalid DataType")
+		return warn("Registry | Invalid DataType")
 	end
 	if not Properties then
 		Properties = {}
@@ -72,7 +72,7 @@ function reg.pathNameToInstance(PathName: string)
 	local SelectedInstance = script
 	for i, v in pairs(segments) do
 		if not SelectedInstance:FindFirstChild(v) then
-			print("Key \"" .. v .. "\" did not exist while parsing pathName. It has been created.")
+			print("Registry | Key \"" .. v .. "\" did not exist while parsing pathName. It has been created.")
 			Inst("Folder", SelectedInstance, { Name = v })
 		end
 		
@@ -84,7 +84,7 @@ end
 
 function reg.doesExist(FullPath)
 	if not FullPath then
-		return warn("There was an error while checking if a key exists: Invalid path")
+		return warn("Registry | There was an error while checking if a key exists: Invalid path")
 	end
 	
 	local segments = FullPath:split(".")
@@ -110,7 +110,7 @@ function reg.newKey(FullPath: string)
 	reg.init()
 	
 	if not FullPath then
-		return warn("There was an error while creating a key: Invalid path")
+		return warn("Registry | There was an error while creating a key: Invalid path")
 	end
 	
 	local segments = FullPath:split(".")
@@ -119,7 +119,7 @@ function reg.newKey(FullPath: string)
 	
 	-- check if it exists first
 	if reg.doesExist(FullPath) then
-		return warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
+		return warn("Registry | Key \"" .. FullPath .. "\" already exists. It has not been created.")
 	end
 	
 	-- cont
@@ -135,7 +135,7 @@ function reg.newKey(FullPath: string)
 	end
 
 	local key = Inst("Folder", reg.pathNameToInstance(PathToParentKey), { Name = KeyName })
-	print("Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"")
+	print("Registry | Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"")
 	
 	return {
 		
@@ -154,18 +154,18 @@ function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	reg.init()
 
 	if not FullPath then
-		return warn("There was an error while setting an entry: Invalid path")
+		return warn("Registry | There was an error while setting an entry: Invalid path")
 	end
 	if (not EntryType) or (not DataTypes[EntryType]) then
-		return warn("There was an error while setting an entry: Invalid type")
+		return warn("Registry | There was an error while setting an entry: Invalid type")
 	end
 	if not EntryValue then
-		return warn("There was an error while setting an entry: Invalid value")
+		return warn("Registry | There was an error while setting an entry: Invalid value")
 	end
 
 	-- check if it exists first
 	if reg.doesExist(FullPath) then
-		return warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
+		return warn("Registry | Key \"" .. FullPath .. "\" already exists. It has not been created.")
 	end
 	
 	local path = FullPath:split(".")
@@ -191,12 +191,12 @@ function reg.get(FullPath: string)
 	reg.init()
 
 	if not FullPath then
-		return warn("There was an error while getting an entry: Invalid path")
+		return warn("Registry | There was an error while getting an entry: Invalid path")
 	end
 	
 	local inst = reg.pathNameToInstance(FullPath)
 	if not inst then
-		return warn("There was an error while getting an entry: Entry does not exist")
+		return warn("Registry | There was an error while getting an entry: Entry does not exist")
 	end
 	
 	return inst.Value
