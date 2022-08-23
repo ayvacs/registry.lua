@@ -123,7 +123,6 @@ function reg.newKey(FullPath: string)
 	end
 	
 	-- cont
-	print(FullPath.." is being created")
 	for i, v in pairs(segments) do
 		if i == #segments then
 			KeyName = v
@@ -137,12 +136,55 @@ function reg.newKey(FullPath: string)
 
 	local key = Inst("Folder", reg.pathNameToInstance(PathToParentKey), { Name = KeyName })
 	print("Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"")
-	return 1, key
+	
+	return 1, {
+		
+		set = function(Name: string, EntryType: string, EntryValue: any)
+			return reg.set(FullPath .. "." .. Name, EntryType, EntryValue)
+		end,
+
+		get = function(Name: string)
+			return reg.get(FullPath .. "." .. Name)
+		end
+		
+	}
 end
 
 function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	reg.init()
+
+	if not FullPath then
+		return 0, warn("There was an error while setting an entry: Invalid path")
+	end
+	if (not EntryType) or (not DataTypes[EntryType]) then
+		return 0, warn("There was an error while setting an entry: Invalid type")
+	end
+	if not EntryValue then
+		return 0, warn("There was an error while setting an entry: Invalid value")
+	end
+
+	-- check if it exists first
+	if reg.doesExist(FullPath) then
+		return 0, warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
+	end
 	
+	local path = FullPath:split(".")
+	
+	-- remove everything after the last period
+	local parentPathName = ""
+	for i, v in pairs(path) do
+		if i ~= 1 and i ~= #path then
+			parentPathName ..= "."
+		end
+		if i ~= #path then
+			parentPathName ..= v
+		end
+	end
+	
+	return 1, Inst(DataTypes[EntryType][1] .. "Value", reg.pathNameToInstance(parentPathName), {
+		["Name"] = path[#path],
+		["Value"] = EntryValue
+	})
 end
 
 function reg.get(FullPath: string)
