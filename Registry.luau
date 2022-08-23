@@ -187,9 +187,7 @@ function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	if (not EntryType) or (not DataTypes[EntryType]) then
 		return warn("Registry | There was an error while setting an entry: Invalid type")
 	end
-	if not EntryValue then
-		return warn("Registry | There was an error while setting an entry: Invalid value")
-	end
+	-- do not check EntryValue; booleans
 
 	-- check if it exists first
 	if reg.doesExist(FullPath) then
@@ -254,21 +252,27 @@ end)
 -- HKEY_SERVICES
 
 -- add metadata
+reg.newKey("HKEY_SERVICES.GenuineService", true)
 reg.newKey("HKEY_SERVICES.RegistryEditor", true)
-reg.newKey("HKEY_SERVICES.RegistryEditor.CurrentVersion", true)
-
 reg.newKey("HKEY_SERVICES.Umbra", true)
-reg.newKey("HKEY_SERVICES.Umbra.CurrentVersion", true)
+reg.newKey("HKEY_SERVICES.Umbra.Update", true)
 
-reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Name", "str", manifest.Name)
-reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.ProductName", "str", manifest.ProductName)
-reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Url", "str", manifest.Url)
-reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Version", "str", manifest.Version.Name)
+reg.set("HKEY_SERVICES.GenuineService.Enabled", "bool", false)
 
-reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Name", "str", "Umbra Sideloader")
-reg.set("HKEY_SERVICES.Umbra.CurrentVersion.ProductName", "str", "Umbra Sideloader X 10.5.49.0091")
-reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Url", "str", "https://ave.is-a.dev/umbra")
-reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Version", "str", "10.5.49.0091")
+reg.set("HKEY_SERVICES.RegistryEditor.Name", "str", manifest.Name)
+reg.set("HKEY_SERVICES.RegistryEditor.ProductName", "str", manifest.ProductName)
+reg.set("HKEY_SERVICES.RegistryEditor.Url", "str", manifest.Url)
+reg.set("HKEY_SERVICES.RegistryEditor.Version", "str", manifest.Version.Name)
+
+reg.set("HKEY_SERVICES.Umbra.Name", "str", "Umbra Sideloader")
+reg.set("HKEY_SERVICES.Umbra.ProductName", "str", "Umbra Sideloader X 10.5.49.0091")
+reg.set("HKEY_SERVICES.Umbra.Url", "str", "https://ave.is-a.dev/umbra")
+reg.set("HKEY_SERVICES.Umbra.Version", "str", "10.5.49.0091")
+reg.set("HKEY_SERVICES.Umbra.Consent", "bool", false)
+reg.set("HKEY_SERVICES.Umbra.PremiumUser", "bool", false)
+reg.set("HKEY_SERVICES.Umbra.Update.DisablePrematureUpdates", "bool", true)
+reg.set("HKEY_SERVICES.Umbra.Update.TargetVersionId", "int", 0)
+reg.set("HKEY_SERVICES.Umbra.Update.TargetVersionDetails", "str", "X")
 
 -- return
 return reg
