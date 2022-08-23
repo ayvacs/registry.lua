@@ -1,6 +1,6 @@
 # Roblox Registry Editor
 
-Windows' `regedit` program, now available in your Roblox games. Stop using pointer tables and `_G`, switch to authenticated object-based storage. Keep confidential variables away from exploiters' hands.
+Stop using pointer tables and `_G`, switch to authenticated object-based storage. Keep confidential variables away from exploiters' hands. If you're familiar with Windows's `regedit` program, you'll love this.
 
 ## How it works
 
