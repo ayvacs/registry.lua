@@ -1,24 +1,26 @@
 
 -- Registry Editor
--- v1.0.0
+-- v1.0.1
 -- https://github.com/ayvacs/registry
 
 local reg = {}
 
 
 local isRegInit = false
+-- Initialize the registry
+-- If `force` == true, the registry will re-initialize. This might break some things.
 function reg.init(force: bool)
 	if not force and isRegInit then
 		return 0--, warn("The registry is already initialized")
 	end
 	
-	local HANDLE_SERVER = Inst("Folder", script, { Name = "HANDLE_SERVER" })
+	local HKEY_SERVER = Inst("Folder", script, { Name = "HKEY_SERVER" })
 	print("Registry | Successfully initialized")
 	isRegInit = true
 	return 1
 end
 
--- DataTypes for creating -Value Instances
+-- DataType references, for creating -Value Instances
 local DataTypes = {
 	["bool"] = {"Bool"},
 	["brickcolor"] = {"BrickColor"},
@@ -52,17 +54,15 @@ function Inst(DataType: string, Parent: Instance, Properties: table)
 	return inst
 end
 
-
-
+-- Just a testing function
 function reg.test()
 	reg.init()
 	print("Hello there")
 end
 
+-- Input a path name, receive an instance.
+-- if PathName == "HKEY_SERVER.MyKey.ThisIsAnotherKey", return the ThisIsAnotherKey instance.
 function reg.pathNameToInstance(PathName: string)
-	-- Input a path name, receive an instance.
-	-- e.g.: if PathName == "HANDLE_SERVER.MyKey.ThisIsAnotherKey", return ThisIsAnotherKey instance.
-	
 	local segments = PathName:split(".")
 	
 	if #segments == 1 and script:FindFirstChild(segments[1]) then
@@ -82,6 +82,7 @@ function reg.pathNameToInstance(PathName: string)
 	return SelectedInstance
 end
 
+-- Returns true if a key or entry exists, false if it doesn't.
 function reg.doesExist(FullPath)
 	if not FullPath then
 		return warn("Registry | There was an error while checking if a key exists: Invalid path")
@@ -106,6 +107,7 @@ function reg.doesExist(FullPath)
 	return false
 end
 
+-- Creates a new key.
 function reg.newKey(FullPath: string)
 	reg.init()
 	
@@ -150,6 +152,7 @@ function reg.newKey(FullPath: string)
 	}
 end
 
+-- Sets an entry's value.
 function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	reg.init()
 
@@ -187,6 +190,7 @@ function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	})
 end
 
+-- Gets an entry's value, if it exists.
 function reg.get(FullPath: string)
 	reg.init()
 
