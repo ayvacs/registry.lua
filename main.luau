@@ -35,7 +35,7 @@ local DataTypes = {
 -- Improved Instance.new function
 function Inst(DataType: string, Parent: Instance, Properties: table)
 	if not DataType then
-		return 0, warn("Invalid DataType")
+		return warn("Invalid DataType")
 	end
 	if not Properties then
 		Properties = {}
@@ -84,7 +84,7 @@ end
 
 function reg.doesExist(FullPath)
 	if not FullPath then
-		return 0, warn("There was an error while checking if a key exists: Invalid path")
+		return warn("There was an error while checking if a key exists: Invalid path")
 	end
 	
 	local segments = FullPath:split(".")
@@ -110,7 +110,7 @@ function reg.newKey(FullPath: string)
 	reg.init()
 	
 	if not FullPath then
-		return 0, warn("There was an error while creating a key: Invalid path")
+		return warn("There was an error while creating a key: Invalid path")
 	end
 	
 	local segments = FullPath:split(".")
@@ -119,7 +119,7 @@ function reg.newKey(FullPath: string)
 	
 	-- check if it exists first
 	if reg.doesExist(FullPath) then
-		return 0, warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
+		return warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
 	end
 	
 	-- cont
@@ -137,7 +137,7 @@ function reg.newKey(FullPath: string)
 	local key = Inst("Folder", reg.pathNameToInstance(PathToParentKey), { Name = KeyName })
 	print("Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"")
 	
-	return 1, {
+	return {
 		
 		set = function(Name: string, EntryType: string, EntryValue: any)
 			return reg.set(FullPath .. "." .. Name, EntryType, EntryValue)
@@ -154,18 +154,18 @@ function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 	reg.init()
 
 	if not FullPath then
-		return 0, warn("There was an error while setting an entry: Invalid path")
+		return warn("There was an error while setting an entry: Invalid path")
 	end
 	if (not EntryType) or (not DataTypes[EntryType]) then
-		return 0, warn("There was an error while setting an entry: Invalid type")
+		return warn("There was an error while setting an entry: Invalid type")
 	end
 	if not EntryValue then
-		return 0, warn("There was an error while setting an entry: Invalid value")
+		return warn("There was an error while setting an entry: Invalid value")
 	end
 
 	-- check if it exists first
 	if reg.doesExist(FullPath) then
-		return 0, warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
+		return warn("Key \"" .. FullPath .. "\" already exists. It has not been created.")
 	end
 	
 	local path = FullPath:split(".")
@@ -181,7 +181,7 @@ function reg.set(FullPath: string, EntryType: string, EntryValue: any)
 		end
 	end
 	
-	return 1, Inst(DataTypes[EntryType][1] .. "Value", reg.pathNameToInstance(parentPathName), {
+	return Inst(DataTypes[EntryType][1] .. "Value", reg.pathNameToInstance(parentPathName), {
 		["Name"] = path[#path],
 		["Value"] = EntryValue
 	})
@@ -189,7 +189,17 @@ end
 
 function reg.get(FullPath: string)
 	reg.init()
+
+	if not FullPath then
+		return warn("There was an error while getting an entry: Invalid path")
+	end
 	
+	local inst = reg.pathNameToInstance(FullPath)
+	if not inst then
+		return warn("There was an error while getting an entry: Entry does not exist")
+	end
+	
+	return inst.Value
 end
 
 
