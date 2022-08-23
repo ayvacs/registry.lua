@@ -85,3 +85,4 @@ print( reg.get("HKEY_SERVER.foo.bar") )
 | --- | --- |
 | `HKEY_PLAYERS` | Intended for storing information about Players. When a Player joins, a key will be mapped to their `UserId` if it doesn't already exist. A Player's Key will not be removed when they leave the game. |
 | `HKEY_SERVER` | The default HKey for server-sided information. |
+| `HKEY_SERVICES` | Workspace for installed services. |

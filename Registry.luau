@@ -3,6 +3,24 @@
 -- v1.0.2
 -- https://github.com/ayvacs/registry
 
+local manifest = setmetatable({   __version = 3.2,
+
+	["Name"] = "Registry Editor",
+	["ProductName"] = "Registry Editor 1.0.2 [Stable Release]",
+	["Url"] = "https://github.com/ayvacs/registry",
+
+	["Version"] = {
+		["Name"] = "1.0.2"
+	}
+
+},{
+	["__index"] = function(table, index)
+		pcall(function()
+			print("Registry | Index [\"" .. tostring(index) .. "\"] does not exist in manifest")
+		end)
+	end
+})
+
 local reg = {}
 local isRegInit = false
 
@@ -10,8 +28,9 @@ local Players = game:GetService("Players")
 
 -- HKey references, for initialization
 local ValidHKeys = {
+	"HKEY_PLAYERS",
 	"HKEY_SERVER",
-	"HKEY_PLAYERS"
+	"HKEY_SERVICES"
 }
 
 -- DataType references, for creating -Value Instances
@@ -35,14 +54,6 @@ function reg.init(force: bool)
 		return 0--, warn("The registry is already initialized")
 	end
 
-	for i, v in pairs(ValidHKeys) do
-		Inst("Folder", script, { Name = v })
-	end
-	
-	Players.PlayerAdded:Connect(function(plr)
-		reg.newKey("HKEY_PLAYERS." .. plr.UserId)
-	end)
-	
 	print("Registry | Successfully initialized")
 	isRegInit = true
 	return 1
@@ -122,7 +133,7 @@ function reg.doesExist(FullPath)
 end
 
 -- Creates a new key.
-function reg.newKey(FullPath: string)
+function reg.newKey(FullPath: string, PrintModeDisabled: bool)
 	reg.init()
 
 	if not FullPath then
@@ -151,7 +162,7 @@ function reg.newKey(FullPath: string)
 	end
 
 	local key = Inst("Folder", reg.pathNameToInstance(PathToParentKey), { Name = KeyName })
-	print("Registry | Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"")
+	if not PrintModeDisabled then print("Registry | Key \"" .. KeyName .. "\" has been created inside \"" .. PathToParentKey .. "\"") end
 
 	return {
 
@@ -221,4 +232,43 @@ function reg.get(FullPath: string)
 end
 
 
+
+-- DEFAULT HKEY DATA
+
+
+-- create all hkeys
+for i, v in pairs(ValidHKeys) do
+	Inst("Folder", script, { Name = v })
+	print("Registry | Created HKey \"" .. v .. "\"")
+end
+
+
+-- HKEY_PLAYERS
+
+-- when a player joins, create a key in HKEY_PLAYERS
+Players.PlayerAdded:Connect(function(plr)
+	reg.newKey("HKEY_PLAYERS." .. plr.UserId)
+end)
+
+
+-- HKEY_SERVICES
+
+-- add metadata
+reg.newKey("HKEY_SERVICES.RegistryEditor", true)
+reg.newKey("HKEY_SERVICES.RegistryEditor.CurrentVersion", true)
+
+reg.newKey("HKEY_SERVICES.Umbra", true)
+reg.newKey("HKEY_SERVICES.Umbra.CurrentVersion", true)
+
+reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Name", "str", manifest.Name)
+reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.ProductName", "str", manifest.ProductName)
+reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Url", "str", manifest.Url)
+reg.set("HKEY_SERVICES.RegistryEditor.CurrentVersion.Version", "str", manifest.Version.Name)
+
+reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Name", "str", "Umbra Sideloader")
+reg.set("HKEY_SERVICES.Umbra.CurrentVersion.ProductName", "str", "Umbra Sideloader X 10.5.49.0091")
+reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Url", "str", "https://ave.is-a.dev/umbra")
+reg.set("HKEY_SERVICES.Umbra.CurrentVersion.Version", "str", "10.5.49.0091")
+
+-- return
 return reg
