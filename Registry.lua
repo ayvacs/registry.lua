@@ -10,7 +10,7 @@ local manifest = setmetatable({   __version = 3.2,
 	["Url"] = "https://github.com/ayvacs/registry",
 
 	["Version"] = {
-		["Name"] = "1.0.2"
+		["Name"] = "1.0.3"
 	}
 
 },{
