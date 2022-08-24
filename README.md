@@ -1,4 +1,4 @@
-# Roblox Registry Editor
+# Registry.lua: the Roblox Registry Editor
 
 Stop using pointer tables and `_G`, switch to authenticated object-based storage. Keep confidential variables away from exploiters' hands. If you're familiar with Windows's `regedit` program, you'll love this.
 

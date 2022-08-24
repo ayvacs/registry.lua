@@ -1,12 +1,12 @@
 
--- Registry Editor
--- v1.0.2
--- https://github.com/ayvacs/registry
+-- Registry.lua
+-- v1.0.3
+-- https://github.com/ayvacs/registry.lua
 
 local manifest = setmetatable({   __version = 3.2,
 
-	["Name"] = "Registry Editor",
-	["ProductName"] = "Registry Editor 1.0.2 [Stable Release]",
+	["Name"] = "Registry.lua",
+	["ProductName"] = "Registry Editor 1.0.3 [Stable Release]",
 	["Url"] = "https://github.com/ayvacs/registry",
 
 	["Version"] = {
